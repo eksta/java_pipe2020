@@ -86,40 +86,33 @@ public class TestServiceControllerTest {
     }
 
     @Test
-    public void delete_PersonEntity() throws Exception {
+    public void delete_should_deletePersonEntity_when_personEntityExists() throws Exception {
+        //delete, may be check by get?!
+        PersonEntity personEntity = entityUtils.createAndSavePersonEntity();
 
-        PersonEntity personEntity1 = entityUtils.createAndSavePersonEntity();
-        PersonEntity personEntity2 = entityUtils.createAndSavePersonEntity();
-        String expectedJson = objectMapper.writeValueAsString(Arrays.asList(personEntity1));
-
-
-        mvc.perform(delete("/person/" + personEntity2.getId()).accept(MediaType.APPLICATION_JSON))
+        mvc.perform(delete("/person/" + personEntity.getId()).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        mvc.perform(get("/person/").accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().json(expectedJson));
-
+        PersonEntity personEntity1 = entityUtils.getPersonEntity(personEntity.getId().toString());
+        Assert.assertEquals(null, personEntity1);
     }
 
     @Test
     public void update_PersonEntity() throws Exception {
-        PersonEntity personEntity1= entityUtils.createAndSavePersonEntity();
-        personEntity1.setName("name");
-        Person person = new Person("name");
-        String expectedJson = objectMapper.writeValueAsString(personEntity1);
+        PersonEntity personEntity1 = entityUtils.createAndSavePersonEntity();
+        String argJson = objectMapper.writeValueAsString(new Person("new"));
 
-        String argJson = objectMapper.writeValueAsString(person);
-
-        mvc.perform(put("/person/"+ personEntity1.getId())
+        String response = mvc.perform(put("/person/" + personEntity1.getId().toString())
                 .content(argJson)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
-        mvc.perform(get("/person/" + personEntity1.getId()).accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().json(expectedJson));
+        Map<String, String> responseObject = objectMapper.readValue(response, Map.class);
+        Assert.assertEquals(personEntity1.getName(), responseObject.get("name"));
+
+        PersonEntity personEntity2 = entityUtils.getPersonEntity(responseObject.get("id"));
+        Assert.assertEquals("new", personEntity2.getName());
 
     }
 
