@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("person")
+@RequestMapping("/person")
 public class TestServiceController {
 
     private TestBusinessLogicService testBusinessLogicService;

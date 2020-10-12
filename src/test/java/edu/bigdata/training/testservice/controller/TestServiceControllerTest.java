@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
@@ -32,6 +33,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {ServiceConf.class, UtilsConf.class})
+@AutoConfigureMockMvc(addFilters=false)
+
 public class TestServiceControllerTest {
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -47,6 +50,7 @@ public class TestServiceControllerTest {
     }
 
     @Test
+
     public void get_should_returnPersonEntity_when_personEntityExists() throws Exception {
         PersonEntity personEntity = entityUtils.createAndSavePersonEntity();
         String expectedJson = objectMapper.writeValueAsString(personEntity);
