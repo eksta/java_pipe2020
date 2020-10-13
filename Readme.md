@@ -4,9 +4,9 @@
 
 собрать и опубликовать docker-образ 
 docker build .
-docker tag <image hash> exit
+docker tag 42fa7968e93b eksta/testservice:ssl
 docker login
-docker push javapipe2020/testservice:ssl
+docker push eksta/testservice:ssl
 
 запустить minikube
 minikube start
